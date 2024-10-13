@@ -19,3 +19,7 @@
 💻 Comandos disponíveis
 
 ° Use comandos como /testepos para testar a posição do ícone no mapa
+
+🎞️​ Video
+
+° Link: https://youtu.be/6jLgj1z91dU
