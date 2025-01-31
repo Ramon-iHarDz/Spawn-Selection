@@ -2,7 +2,7 @@
 forward             SetPosMap_TD(playerid, Float:x, Float:y);
 
 
-static 
+new 
     PlayerText:TD_ESPAWN[MAX_PLAYERS][30],
     bool:TextCriada[MAX_PLAYERS];
 
