@@ -1,40 +1,76 @@
-/*
-                               ,--.   ,--.,---.  ,------. ,--.  ,---.,--.   ,--.,------.,--.   
-                                \  `.'  //  O  \ |  .--. '|  | /  O  \\  `.'  / |  .---'|  |   
-                                 \     /|  .-.  ||  '--'.'|  ||  .-.  |\     /  |  `--, |  |   
-                                  \   / |  | |  ||  |\  \ |  ||  | |  | \   /   |  `---.|  '--.
-                                   `-'  `--' `--'`--' '--'`--'`--' `--'  `-'    `------'`-----'
-*/
+                    // Forward
+forward             SetPosMap_TD(playerid, Float:x, Float:y);
 
 
+static 
+    PlayerText:TD_ESPAWN[MAX_PLAYERS][30],
+    bool:TextCriada[MAX_PLAYERS];
 
-
-new PlayerText:TD_ESPAWN[MAX_PLAYERS][30];
-
-new Float:eixoX = 291.0; // Coordenadas ao longo do eixo X
-new Float:eixoY = 139.0; // Coordenadas ao longo do eixo Y
-new Float:larguramapX = 180.0; // Largura do mapa (tamanho).
-new Float:larguramapY = 171.4; // Altura do mapa (tamanho).
-new Float:larguraiconX = 8.0; // Largura do ícone do jogador no mapa (tamanho).
-new Float:larguraiconY = 8.0; // Altura do ícone do jogador no mapa (tamanho).
-
-new bool:TextCriada[MAX_PLAYERS];
-
-
+static 
+    Float:eixoX = 291.0, // Coordenadas ao longo do eixo X
+    Float:eixoY = 139.0, // Coordenadas ao longo do eixo Y
+    Float:larguramapX = 180.0, // Largura do mapa (tamanho).
+    Float:larguramapY = 171.4, // Altura do mapa (tamanho).
+    Float:larguraiconX = 8.0, // Largura do Ã­cone do jogador no mapa (tamanho).
+    Float:larguraiconY = 8.0; // Altura do Ã­cone do jogador no mapa (tamanho).
 
 
 /*
-                                     ,---. ,--------. ,-----.  ,-----.,--. ,--.
-                                    '   .-''--.  .--''  .-.  ''  .--./|  .'   /
-                                    `.  `-.   |  |   |  | |  ||  |    |  .   ' 
-                                    .-'    |  |  |   '  '-'  ''  '--'\|  |\   \
-                                    `-----'   `--'    `-----'  `-----'`--' '--'
+                   ooooooooo.   ooooo     ooo oooooooooo.  ooooo        ooooo   .oooooo.   
+                   `888   `Y88. `888'     `8' `888'   `Y8b `888'        `888'  d8P'  `Y8b  
+                    888   .d88'  888       8   888     888  888          888  888          
+                    888ooo88P'   888       8   888oooo888'  888          888  888          
+                    888          888       8   888    `88b  888          888  888          
+                    888          `88.    .8'   888    .88P  888       o  888  `88b    ooo  
+                   o888o           `YbodP'    o888bood8P'  o888ooooood8 o888o  `Y8bood8P'  
+*/
+
+public SetPosMap_TD(playerid, Float:x, Float:y) {
+    // Calculos
+    static 
+        Float:eixoiconX,
+        Float:eixoiconY,
+        Float:larguraX,
+        Float:larguraY;
+
+    larguraX = 3000 / (larguramapX / 2);
+    larguraY = 3000 / (larguramapY / 2);
+    eixoiconX = (eixoX + ( larguramapX / 2)) + ( x / larguraX ) - (larguraiconX / 2);
+    eixoiconY = (eixoY + ( larguramapY / 2)) - ( y / larguraY ) - (larguraiconY / 2);
+
+    if(!TextCriada[playerid]) { 
+        // destruir o icone criado anteriomente
+        PlayerTextDrawDestroy(playerid, TD_ESPAWN[playerid][29]);
+
+        // Cria a Textdraw do icone
+        TD_ESPAWN[playerid][29] = CreatePlayerTextDraw(playerid, eixoiconX, eixoiconY, "HUD:radar_gangP"); 
+        PlayerTextDrawTextSize(playerid, TD_ESPAWN[playerid][29], larguraiconX, larguraiconY);
+        PlayerTextDrawAlignment(playerid, TD_ESPAWN[playerid][29], 1);
+        PlayerTextDrawColor(playerid, TD_ESPAWN[playerid][29], -1);
+        PlayerTextDrawSetShadow(playerid, TD_ESPAWN[playerid][29], 0);
+        PlayerTextDrawSetOutline(playerid, TD_ESPAWN[playerid][29], 0);
+        PlayerTextDrawBackgroundColor(playerid, TD_ESPAWN[playerid][29], 255);
+        PlayerTextDrawFont(playerid, TD_ESPAWN[playerid][29], 4);
+        PlayerTextDrawSetProportional(playerid, TD_ESPAWN[playerid][29], 1);
+    }
+    // Fazer icon aparecer no local desejado do mapa
+    PlayerTextDrawShow(playerid, TD_ESPAWN[playerid][29]);
+    return true;
+}
+
+
+/*
+                    .oooooo..o ooooooooooooo   .oooooo.     .oooooo.   oooo    oooo 
+                    d8P'    `Y8 8'   888   `8  d8P'  `Y8b   d8P'  `Y8b  `888   .8P'  
+                    Y88bo.           888      888      888 888           888  d8'    
+                    `"Y8888o.       888      888      888 888           88888[      
+                        `"Y88b      888      888      888 888           888`88b.    
+                    oo     .d8P      888      `88b    d88' `88b    ooo   888  `88b.  
+                    8""88888P'      o888o      `Y8bood8P'   `Y8bood8P'  o888o  o888o 
 */
 
 
-
-
-stock LOAD_TD_ESPAWN(playerid) {
+stock CriarTdEscolhaSpawn(playerid) {
     TD_ESPAWN[playerid][0] = CreatePlayerTextDraw(playerid, 288.703, 121.000, "LD_SPAC:white");
     PlayerTextDrawTextSize(playerid, TD_ESPAWN[playerid][0], 184.000, 192.000);
     PlayerTextDrawAlignment(playerid, TD_ESPAWN[playerid][0], 1);
@@ -339,75 +375,32 @@ stock LOAD_TD_ESPAWN(playerid) {
     PlayerTextDrawBackgroundColor(playerid, TD_ESPAWN[playerid][28], 255);
     PlayerTextDrawFont(playerid, TD_ESPAWN[playerid][28], 4);
     PlayerTextDrawSetProportional(playerid, TD_ESPAWN[playerid][28], 1);
-}
 
-stock Open_Escolha_Spawn(playerid) { 
-    for(new i = 0; i < 29; i++)
+    SelectTextDraw(playerid, -2139062254);
+    
+    for(new i = 0; i < sizeof TD_ESPAWN[]; i++)
         PlayerTextDrawShow(playerid, TD_ESPAWN[playerid][i]);
 }
 
-
-
-
-
-/*
-                                ,------. ,--. ,--.,-----.  ,--.   ,--. ,-----.
-                                |  .--. '|  | |  ||  |) /_ |  |   |  |'  .--./
-                                |  '--' ||  | |  ||  .-.  \|  |   |  ||  |    
-                                |  | --' '  '-'  '|  '--' /|  '--.|  |'  '--'\
-                                `--'      `-----' `------' `-----'`--' `-----'
-*/
-
-
-
-
-forward SetPosMap_TD(playerid, Float:x, Float:y);
-public SetPosMap_TD(playerid, Float:x, Float:y) {
-    // Calculos
-    new 
-        Float:eixoiconX,
-        Float:eixoiconY,
-        Float:larguraX,
-        Float:larguraY;
-
-    larguraX = 3000 / (larguramapX / 2);
-    larguraY = 3000 / (larguramapY / 2);
-    eixoiconX = (eixoX + ( larguramapX / 2)) + ( x / larguraX ) - (larguraiconX / 2);
-    eixoiconY = (eixoY + ( larguramapY / 2)) - ( y / larguraY ) - (larguraiconY / 2);
-
-    if(!TextCriada[playerid]) { 
-        // destruir o icone criado anteriomente
-        PlayerTextDrawHide(playerid, TD_ESPAWN[playerid][29]);
-
-        // Cria a Textdraw do icone
-        TD_ESPAWN[playerid][29] = CreatePlayerTextDraw(playerid, eixoiconX, eixoiconY, "HUD:radar_gangP"); 
-        PlayerTextDrawTextSize(playerid, TD_ESPAWN[playerid][29], larguraiconX, larguraiconY);
-        PlayerTextDrawAlignment(playerid, TD_ESPAWN[playerid][29], 1);
-        PlayerTextDrawColor(playerid, TD_ESPAWN[playerid][29], -1);
-        PlayerTextDrawSetShadow(playerid, TD_ESPAWN[playerid][29], 0);
-        PlayerTextDrawSetOutline(playerid, TD_ESPAWN[playerid][29], 0);
-        PlayerTextDrawBackgroundColor(playerid, TD_ESPAWN[playerid][29], 255);
-        PlayerTextDrawFont(playerid, TD_ESPAWN[playerid][29], 4);
-        PlayerTextDrawSetProportional(playerid, TD_ESPAWN[playerid][29], 1);
+stock FecharTdEscolhaSpawn(playerid) {
+    CancelSelectTextDraw(playerid);
+    
+    for(new i = 0; i < sizeof TD_ESPAWN[]; i++) {
+        PlayerTextDrawDestroy(playerid, TD_ESPAWN[playerid][i]);
+        TD_ESPAWN[playerid][i] = PlayerText:INVALID_TEXT_DRAW;
     }
-    // Fazer icon aparecer no local desejado do mapa
-    PlayerTextDrawShow(playerid, TD_ESPAWN[playerid][29]);
-    return true;
 }
 
 
-
-
 /*
-
-                                ,-----. ,-----. ,--.   ,--.  ,---.  ,--.  ,--.,------.   ,-----. 
-                                '  .--./'  .-.  '|   `.'   | /  O  \ |  ,'.|  ||  .-.  \ '  .-.  '
-                                |  |    |  | |  ||  |'.'|  ||  .-.  ||  |' '  ||  |  \  :|  | |  |
-                                '  '--'\'  '-'  '|  |   |  ||  | |  ||  | `   ||  '--'  /'  '-'  '
-                                `-----' `-----' `--'   `--'`--' `--'`--'  `--'`-------'  `-----' 
+                    .oooooo.     .oooooo.   ooo        ooooo       .o.       ooooo      ooo oooooooooo.     .oooooo.    .oooooo..o 
+                    d8P'  `Y8b   d8P'  `Y8b  `88.       .888'      .888.      `888b.     `8' `888'   `Y8b   d8P'  `Y8b  d8P'    `Y8 
+                    888          888      888  888b     d'888      .8"888.      8 `88b.    8   888      888 888      888 Y88bo.      
+                    888          888      888  8 Y88. .P  888     .8' `888.     8   `88b.  8   888      888 888      888  `"Y8888o.  
+                    888          888      888  8  `888'   888    .88ooo8888.    8     `88b.8   888      888 888      888      `"Y88b 
+                    `88b    ooo  `88b    d88'  8    Y     888   .8'     `888.   8       `888   888     d88' `88b    d88' oo     .d8P 
+                    `Y8bood8P'   `Y8bood8P'  o8o        o888o o88o     o8888o o8o        `8  o888bood8P'    `Y8bood8P'  8""88888P'  
 */
-
-
 
 
 CMD:testepos(playerid, params[]) {
